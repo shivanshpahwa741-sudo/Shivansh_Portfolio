@@ -1,1176 +1,552 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-cursor="on">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shivansh Pahwa | Building. Testing. Failing.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --color-bg:      #131313;
-      --color-surface: #1e1d1d;
-      --color-card:    #252525;
-      --color-gold:    #ffc700;
-      --color-text:    #e5e2e1;
-      --color-muted:   #9b9078;
-      --color-border:  rgba(155,144,120,0.2);
-      --font-heading:  'Space Grotesk', sans-serif;
-      --font-body:     'Inter', sans-serif;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background-color: var(--color-bg);
-      color: var(--color-text);
-      font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    img { display: block; max-width: 100%; }
-    a   { text-decoration: none; color: inherit; }
-    ul  { list-style: none; }
-
-    /* --- Utilities --- */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-    .section-label {
-      font-family: var(--font-heading);
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--color-gold);
-    }
-    .gold-bar {
-      display: block;
-      width: 3.5rem;
-      height: 4px;
-      background-color: var(--color-gold);
-      margin-top: 1rem;
-    }
-    .section-heading {
-      font-family: var(--font-heading);
-      font-size: clamp(2.8rem,6vw,5rem);
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      text-transform: uppercase;
-      line-height: 0.95;
-    }
-    .section-top {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 3.5rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    /* --- Keyframes --- */
-    @keyframes fadeInUp {
-      from { opacity:0; transform:translateY(28px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity:0; }
-      to   { opacity:1; }
-    }
-
-    /* =====================
-       NAVBAR  #navbar
-    ===================== */
-    #navbar {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 72px;
-      z-index: 999;
-      background-color: rgba(19,19,19,0.88);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--color-border);
-      display: flex;
-      align-items: center;
-    }
-    #navbar .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
-    .nav-logo {
-      font-family: var(--font-heading);
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      transition: color 0.2s;
-    }
-    .nav-logo:hover { color: var(--color-gold); }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-    }
-    .nav-links a {
-      font-family: var(--font-heading);
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-text);
-      transition: color 0.2s;
-    }
-    .nav-links a:hover    { color: var(--color-gold); }
-    .nav-links .active    { color: var(--color-gold); }
-
-    .btn-nav {
-      font-family: var(--font-heading);
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #251a00;
-      background-color: var(--color-gold);
-      padding: 0.55rem 1.4rem;
-      border-radius: 3px;
-      transition: opacity 0.2s;
-    }
-    .btn-nav:hover { opacity: 0.8; }
-
-    /* =====================
-       HERO  #hero
-    ===================== */
-    #hero {
-      min-height: 100vh;
-      padding-top: 72px;
-    }
-    #hero .container {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 3rem;
-      align-items: flex-end;
-      padding-top: 4rem;
-      padding-bottom: 6rem;
-      width: 100%;
-    }
-    .hero-text { animation: fadeInUp 0.75s ease both; }
-
-    .hero-headline {
-      font-family: var(--font-heading);
-      font-size: clamp(4rem,9vw,9rem);
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 0.92;
-      margin-bottom: 2rem;
-    }
-    .hero-headline > span { color: var(--color-gold); }
-
-    .hero-description {
-      font-size: 1.1rem;
-      color: var(--color-muted);
-      max-width: 460px;
-      line-height: 1.75;
-      margin-bottom: 2rem;
-      animation: fadeInUp 0.75s 0.15s ease both;
-    }
-    .hero-description b { color: var(--color-text); font-weight: 600; }
-
-    /* Contact info row under description */
-    .hero-contact {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      animation: fadeInUp 0.75s 0.25s ease both;
-    }
-    .hero-contact a {
-      font-size: 0.85rem;
-      color: var(--color-muted);
-      transition: color 0.2s;
-    }
-    .hero-contact a:hover { color: var(--color-gold); }
-
-    .hero-portrait {
-      position: relative;
-      animation: fadeIn 1s 0.3s ease both;
-    }
-    .hero-portrait img {
-      width: 100%;
-      aspect-ratio: 3/4;
-      object-fit: cover;
-      object-position: top;
-      border-radius: 6px;
-      filter: grayscale(100%);
-      transition: filter 0.6s ease;
-    }
-    .hero-portrait img:hover { filter: grayscale(0%); }
-
-    .portrait-badge {
-      position: absolute;
-      bottom: -1.25rem;
-      right: -1.25rem;
-      width: 64px; height: 64px;
-      background-color: var(--color-gold);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.75rem;
-    }
-
-    /* =====================
-       EDUCATION  #education
-    ===================== */
-    #education {
-      background-color: var(--color-surface);
-      padding: 7rem 0;
-    }
-    .edu-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-    .edu-card {
-      background-color: var(--color-card);
-      border-radius: 6px;
-      padding: 2rem 2.5rem;
-      border-left: 4px solid var(--color-gold);
-    }
-    .edu-year {
-      font-family: var(--font-heading);
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--color-gold);
-      margin-bottom: 0.5rem;
-    }
-    .edu-school {
-      font-family: var(--font-heading);
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 0.3rem;
-    }
-    .edu-degree {
-      font-size: 0.9rem;
-      color: var(--color-muted);
-    }
-    .edu-location {
-      font-size: 0.8rem;
-      color: var(--color-muted);
-      margin-top: 0.5rem;
-      font-style: italic;
-    }
-
-    /* =====================
-       WORK  #work
-    ===================== */
-    #work { padding: 7rem 0; }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-
-    .project-card {
-      background-color: var(--color-card);
-      border-radius: 6px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-    .project-card:hover {
-      background-color: #2f2f2f;
-      transform: translateY(-5px);
-    }
-
-    .card-img {
-      overflow: hidden;
-      aspect-ratio: 16/9;
-    }
-    .card-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-    .project-card:hover .card-img img { transform: scale(1.07); }
-
-    .card-content {
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    .card-label {
-      font-family: var(--font-heading);
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--color-gold);
-      margin-bottom: 0.4rem;
-    }
-    .card-title {
-      font-family: var(--font-heading);
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
-    }
-    .card-desc {
-      font-size: 0.875rem;
-      color: var(--color-muted);
-      flex: 1;
-      line-height: 1.6;
-    }
-
-    /* Bullet points inside cards */
-    .card-bullets {
-      margin-top: 0.75rem;
-      padding-left: 1rem;
-      list-style: disc;
-    }
-    .card-bullets li {
-      font-size: 0.8rem;
-      color: var(--color-muted);
-      line-height: 1.55;
-      margin-bottom: 0.3rem;
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 1.5rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--color-border);
-    }
-    .card-metric {
-      font-family: var(--font-heading);
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--color-gold);
-    }
-    .card-metric-sub {
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-muted);
-      margin-top: 2px;
-    }
-    .card-arrow {
-      font-size: 1.2rem;
-      color: var(--color-gold);
-      transition: transform 0.2s ease;
-    }
-    .project-card:hover .card-arrow { transform: translate(4px,-4px); }
-
-    /* =====================
-       MORE EXPERIENCE (list style)  #experience
-    ===================== */
-    #experience {
-      background-color: var(--color-surface);
-      padding: 7rem 0;
-    }
-    .exp-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .exp-item {
-      padding: 2rem 0;
-      border-bottom: 1px solid var(--color-border);
-      display: grid;
-      grid-template-columns: 120px 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
-    .exp-year {
-      font-family: var(--font-heading);
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--color-gold);
-      letter-spacing: 0.05em;
-      padding-top: 3px;
-    }
-    .exp-right h3 {
-      font-family: var(--font-heading);
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.2rem;
-    }
-    .exp-right .exp-role {
-      font-size: 0.82rem;
-      color: var(--color-gold);
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-    }
-    .exp-bullets {
-      padding-left: 1rem;
-      list-style: disc;
-    }
-    .exp-bullets li {
-      font-size: 0.875rem;
-      color: var(--color-muted);
-      line-height: 1.6;
-      margin-bottom: 0.3rem;
-    }
-    .exp-bullets li b { color: var(--color-text); font-weight: 600; }
-
-    /* =====================
-       AWARDS  #awards
-    ===================== */
-    #awards { padding: 7rem 0; }
-
-    .awards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-      margin-top: 3rem;
-    }
-    .award-card {
-      background-color: var(--color-card);
-      border-radius: 6px;
-      padding: 2rem;
-      border-top: 3px solid var(--color-gold);
-      transition: transform 0.3s ease, background-color 0.3s ease;
-    }
-    .award-card:hover {
-      transform: translateY(-4px);
-      background-color: #2f2f2f;
-    }
-    .award-year {
-      font-family: var(--font-heading);
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--color-gold);
-      margin-bottom: 0.5rem;
-    }
-    .award-title {
-      font-family: var(--font-heading);
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .award-desc {
-      font-size: 0.85rem;
-      color: var(--color-muted);
-      line-height: 1.55;
-    }
-
-    /* =====================
-       SKILLS  #skills
-    ===================== */
-    #skills {
-      background-color: var(--color-surface);
-      padding: 7rem 0;
-    }
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-    .skill-group {
-      background-color: var(--color-card);
-      border-radius: 6px;
-      padding: 2rem;
-    }
-    .skill-group h4 {
-      font-family: var(--font-heading);
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--color-gold);
-      margin-bottom: 1rem;
-    }
-    .tags-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .skill-tag {
-      font-family: var(--font-heading);
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 0.4rem 1rem;
-      background-color: #2c2b2b;
-      border-radius: 100px;
-      border: 1px solid transparent;
-      transition: border-color 0.2s ease;
-    }
-    .skill-tag:hover { border-color: var(--color-gold); }
-
-    /* =====================
-       INTERESTS  #interests
-    ===================== */
-    #interests { padding: 7rem 0; }
-
-    .interests-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2.5rem;
-      align-items: start;
-      margin-top: 3rem;
-    }
-    .reading-card {
-      background-color: var(--color-card);
-      padding: 2.5rem;
-      border-radius: 6px;
-      border-left: 4px solid var(--color-gold);
-    }
-    .reading-card h3 {
-      font-family: var(--font-heading);
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
-      margin-top: 0.75rem;
-    }
-    .reading-card > p {
-      font-size: 0.95rem;
-      color: var(--color-muted);
-      margin-bottom: 1.25rem;
-      line-height: 1.75;
-    }
-    .reading-quote {
-      background-color: #2f2e2e;
-      border-radius: 4px;
-      padding: 1.25rem;
-      font-style: italic;
-      font-size: 0.9rem;
-      color: var(--color-text);
-      line-height: 1.65;
-    }
-    .book-column {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      align-items: start;
-    }
-    .book-cover {
-      position: relative;
-      border-radius: 6px;
-      overflow: hidden;
-      aspect-ratio: 2/3;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
-    }
-    .book-cover img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    /* Pseudo-element ::after — gradient overlay */
-    .book-cover::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 50%;
-      background: linear-gradient(to top, rgba(19,19,19,0.9), transparent);
-    }
-    .book-label {
-      position: absolute;
-      bottom: 0.9rem; left: 0.9rem; right: 0.9rem;
-      z-index: 1;
-      font-family: var(--font-heading);
-      font-size: 0.85rem;
-      font-weight: 700;
-      line-height: 1.25;
-    }
-    .thought-block h4 {
-      font-family: var(--font-heading);
-      font-size: 1.2rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
-    }
-    .thought-block p {
-      font-size: 0.875rem;
-      color: var(--color-muted);
-      line-height: 1.7;
-    }
-
-    /* =====================
-       CONTACT  #contact
-    ===================== */
-    #contact {
-      background-color: var(--color-gold);
-      padding: 9rem 2rem;
-      text-align: center;
-    }
-    #contact h2 {
-      font-family: var(--font-heading);
-      font-size: clamp(3rem,9vw,7rem);
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      text-transform: uppercase;
-      line-height: 0.95;
-      color: #251a00;
-      margin-bottom: 3rem;
-    }
-    .cta-buttons {
-      display: flex;
-      gap: 1.25rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-dark {
-      padding: 1rem 3rem;
-      background-color: #251a00;
-      color: var(--color-gold);
-      font-family: var(--font-heading);
-      font-size: 1rem;
-      font-weight: 700;
-      border-radius: 6px;
-      transition: opacity 0.2s ease;
-    }
-    .btn-dark:hover { opacity: 0.85; }
-    .btn-outline-dark {
-      padding: 1rem 3rem;
-      background-color: transparent;
-      color: #251a00;
-      border: 2px solid #251a00;
-      font-family: var(--font-heading);
-      font-size: 1rem;
-      font-weight: 700;
-      border-radius: 6px;
-      transition: background-color 0.2s ease, color 0.2s ease;
-    }
-    .btn-outline-dark:hover { background-color: #251a00; color: var(--color-gold); }
-
-    /* =====================
-       FOOTER
-    ===================== */
-    footer {
-      background-color: var(--color-bg);
-      border-top: 1px solid var(--color-border);
-      padding: 2.5rem 0;
-    }
-    footer .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1.25rem;
-    }
-    .footer-name {
-      font-family: var(--font-heading);
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--color-gold);
-    }
-    .footer-tagline {
-      font-size: 0.82rem;
-      color: var(--color-muted);
-      margin-top: 0.2rem;
-    }
-    .footer-links {
-      display: flex;
-      gap: 2rem;
-    }
-    /* Descendant selector */
-    .footer-links a {
-      font-size: 0.82rem;
-      color: var(--color-muted);
-      transition: color 0.2s ease;
-    }
-    .footer-links a:hover { color: var(--color-text); }
-    .footer-links .back-top { color: var(--color-gold); font-weight: 600; }
-
-    /* =====================
-       RESPONSIVE
-    ===================== */
-    @media (max-width: 900px) {
-      #hero .container    { grid-template-columns: 1fr; }
-      .hero-portrait      { display: none; }
-      .cards-grid         { grid-template-columns: 1fr; }
-      .edu-grid           { grid-template-columns: 1fr; }
-      .awards-grid        { grid-template-columns: 1fr; }
-      .skills-grid        { grid-template-columns: 1fr; }
-      .interests-grid     { grid-template-columns: 1fr; }
-      .exp-item           { grid-template-columns: 1fr; gap: 0.25rem; }
-      .section-top        { flex-direction: column; align-items: flex-start; }
-      .nav-links          { display: none; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shivansh Pahwa · Building, testing, failing</title>
+<meta name="description" content="Shivansh Pahwa · BBA Digital Business and Entrepreneurship at IIM Bangalore, May 2028. Strategy, finance and growth: reading the numbers of real businesses and making the call.">
+<meta name="theme-color" content="#F3F1EB">
+<meta property="og:title" content="Shivansh Pahwa">
+<meta property="og:description" content="Building, testing, failing. Strategy, finance and growth. IIM Bangalore and Mesa School of Business, 2028.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>html{color:#171716;background:#f3f1eb}</style>
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
+<div id="root">
 
-<!-- =====================
-     NAVBAR
-===================== -->
-<nav id="navbar">
-  <div class="container">
-    <a class="nav-logo" href="#hero">Shivansh Pahwa</a>
-    <ul class="nav-links">
-      <li><a class="active" href="#hero">Home</a></li>
-      <li><a href="#work">Work</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#awards">Awards</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <a class="btn-nav" href="Shivansh_Pahwa_resume-2026.pdf" target="_blank">View Resume</a>
+<div class="_curtain_9jtnv_1" data-phase="0" aria-hidden="true">
+  <div class="_mark_9jtnv_16">
+    <span class="_letter_9jtnv_28">S</span><span class="_fold_9jtnv_43"><span>HIVANSH</span></span><span class="_fold_9jtnv_43"><span>&nbsp;</span></span><span class="_letter_9jtnv_28">P</span><span class="_fold_9jtnv_43"><span>AHWA</span></span><span class="_dot_9jtnv_29">.</span>
   </div>
-</nav>
+</div>
+
+<div class="_cursor_1dj6s_1" aria-hidden="true" data-visible="false" data-mode="">
+  <span class="_dot_1dj6s_20"></span>
+  <span class="_label_1dj6s_34">View</span>
+  <span class="_arrow_1dj6s_35">↗</span>
+</div>
+
+<header class="_nav_1lqnj_1">
+  <div class="container _inner_1lqnj_29">
+    <a href="#intro" class="_mark_1lqnj_36" aria-label="Shivansh Pahwa, back to top">SP.</a>
+    <div class="micro _counter_1lqnj_44" aria-live="polite">
+      <span class="_counterNum_1lqnj_51" data-counter-num>00</span>
+      <span class="_counterSep_1lqnj_55">/</span>
+      <span>05</span>
+      <span class="_counterLabel_1lqnj_58" data-counter-label>Introduction</span>
+    </div>
+    <nav class="_links_1lqnj_65" aria-label="Primary">
+      <a href="#experience" class="_link_1lqnj_65"><span class="_sup_1lqnj_84">01</span><span class="_linkText_1lqnj_97">Experience</span></a>
+      <a href="#work" class="_link_1lqnj_65"><span class="_sup_1lqnj_84">02</span><span class="_linkText_1lqnj_97">Work</span></a>
+      <a href="#about" class="_link_1lqnj_65"><span class="_sup_1lqnj_84">04</span><span class="_linkText_1lqnj_97">About</span></a>
+      <a href="#contact" class="_link_1lqnj_65"><span class="_sup_1lqnj_84">05</span><span class="_linkText_1lqnj_97">Contact</span></a>
+    </nav>
+    <button class="micro _toggle_1lqnj_118" aria-expanded="false" aria-controls="site-index" data-index-toggle>Index</button>
+  </div>
+</header>
+
+<div id="site-index" class="_index_1lqnj_126" data-open="false" aria-hidden="true">
+  <div class="container _indexInner_1lqnj_140">
+    <p class="micro _indexTitle_1lqnj_147">Index</p>
+    <ol class="_indexList_1lqnj_152">
+      <li style="--i:0;"><a href="#experience" class="_indexLink_1lqnj_169" tabindex="-1"><span class="micro _indexNum_1lqnj_179">01</span><span>Experience</span></a></li>
+      <li style="--i:1;"><a href="#work" class="_indexLink_1lqnj_169" tabindex="-1"><span class="micro _indexNum_1lqnj_179">02</span><span>Work</span></a></li>
+      <li style="--i:2;"><a href="#leadership" class="_indexLink_1lqnj_169" tabindex="-1"><span class="micro _indexNum_1lqnj_179">03</span><span>Leadership</span></a></li>
+      <li style="--i:3;"><a href="#about" class="_indexLink_1lqnj_169" tabindex="-1"><span class="micro _indexNum_1lqnj_179">04</span><span>About</span></a></li>
+      <li style="--i:4;"><a href="#contact" class="_indexLink_1lqnj_169" tabindex="-1"><span class="micro _indexNum_1lqnj_179">05</span><span>Contact</span></a></li>
+    </ol>
+    <div class="micro _indexFoot_1lqnj_190">
+      <span>Bengaluru, IN</span>
+      <a href="mailto:shivanshpahwa741@gmail.com" tabindex="-1">Email</a>
+      <a href="https://www.linkedin.com/in/shivansh-pahwa/" target="_blank" rel="noreferrer" tabindex="-1">LinkedIn</a>
+      <a href="resume.pdf" target="_blank" rel="noreferrer" tabindex="-1">Résumé</a>
+    </div>
+  </div>
+</div>
 
 <main>
 
-<!-- =====================
-     HERO
-===================== -->
-<section id="hero">
-  <div class="container">
-    <div class="hero-text">
-      <h1 class="hero-headline">
-        Building.<br/>
-        Testing.<br/>
-        <span>Failing.</span>
+<!-- 00 INTRO -->
+<section id="intro" data-theme="light" class="_hero_fsv4p_1">
+  <div class="container _inner_fsv4p_8">
+    <p class="micro _masthead_fsv4p_15" data-reveal style="--reveal-delay:80ms;">
+      <span>Strategy</span><span class="_x_fsv4p_22">×</span><span>Finance</span><span class="_x_fsv4p_22">×</span><span>Growth</span><span class="_x_fsv4p_22">×</span><span>Ventures</span>
+    </p>
+    <div class="_stage_fsv4p_28">
+      <h1 class="_name_fsv4p_37">
+        <span data-reveal-mask style="--reveal-delay:160ms;"><span>Shivansh</span></span>
+        <span data-reveal-mask style="--reveal-delay:260ms;"><span class="_last_fsv4p_52">Pahwa</span></span>
       </h1>
-      <p class="hero-description">
-        19-year-old student at <b>Mesa School of Business</b> &amp; <b>IIM Bangalore</b>.
-        Founder, marketer, and builder, figuring out how to create things that matter,
-        one failed experiment at a time.
+      <p class="_positioning_fsv4p_56">
+        <span data-reveal-mask style="--reveal-delay:420ms;"><span>Building, testing,</span></span>
+        <span data-reveal-mask style="--reveal-delay:510ms;"><span><em class="serif">failing…</em></span></span>
       </p>
-      <div class="hero-contact">
-        <a href="mailto:shivansh_pahwa@ug29.mesaschool.co">shivansh_pahwa@ug29.mesaschool.co</a>
-        <a href="https://www.linkedin.com/in/shivansh-pahwa/" target="_blank">linkedin.com/in/shivansh-pahwa</a>
-        <a href="tel:+918109821725">+91-81098 21725</a>
-      </div>
     </div>
-    <div class="hero-portrait">
-      <!-- Shivansh_Pahwa_profile.jpg uploaded to GitHub repo -->
-      <img src="Shivansh_Pahwa_profile.jpg" alt="Shivansh Pahwa"/>
-      <div class="portrait-badge">🚀</div>
-    </div>
-  </div>
-</section>
-
-<!-- =====================
-     EDUCATION
-===================== -->
-<section id="education">
-  <div class="container">
-    <div class="section-top">
-      <div>
-        <h2 class="section-heading">Education</h2>
-        <span class="gold-bar"></span>
-      </div>
-    </div>
-    <div class="edu-grid">
-      <div class="edu-card">
-        <p class="edu-year">2025 – 2029</p>
-        <p class="edu-school">Mesa School of Business</p>
-        <p class="edu-degree">Undergraduate Programme in Entrepreneurship · GPA 3.78 / 4.00</p>
-        <p class="edu-location">Bengaluru</p>
-      </div>
-      <div class="edu-card">
-        <p class="edu-year">2025 – 2028</p>
-        <p class="edu-school">Indian Institute of Management Bengaluru</p>
-        <p class="edu-degree">BBA, Digital Business and Entrepreneurship · 71.2% (First Class)</p>
-        <p class="edu-location">Bengaluru</p>
+    <div class="_foot_fsv4p_76">
+      <hr class="rule" data-reveal style="--reveal-delay:600ms;">
+      <div class="grid _footRow_fsv4p_79">
+        <p class="_edu_fsv4p_84" data-reveal style="--reveal-delay:660ms;">BBA, Digital Business &amp; Entrepreneurship<span class="_eduSub_fsv4p_90">IIM Bangalore · Mesa School of Business · May 2028</span></p>
+        <p class="_currently_fsv4p_96" data-reveal aria-live="off" style="--reveal-delay:720ms;">
+          <span class="_currentlyLabel_fsv4p_105">Currently</span>
+          <span class="_currentlyArrow_fsv4p_109" aria-hidden="true">→</span>
+          <span class="_wordMask_fsv4p_113" data-rotator></span>
+        </p>
+        <p class="micro _place_fsv4p_143" data-reveal style="--reveal-delay:780ms;">Bengaluru, IN <span class="_sep_fsv4p_148">·</span> <time data-clock>…</time></p>
+        <a href="#experience" class="micro _scroll_fsv4p_153" data-reveal style="--reveal-delay:840ms;"><span>Scroll</span><span class="_scrollLine_fsv4p_166" aria-hidden="true"></span></a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- =====================
-     SELECTED WORK (top 3 with images)
-===================== -->
-<section id="work">
+<!-- 01 EXPERIENCE -->
+<section id="experience" data-theme="dark" class="_section_13hls_1">
   <div class="container">
-    <div class="section-top">
-      <h2 class="section-heading">Selected<br/>Work</h2>
-      <p class="section-label">Building Things / 2019 – 2026</p>
-    </div>
-    <div class="cards-grid">
+    <header class="_header_7m5w1_1">
+      <hr class="rule">
+      <div class="grid _row_7m5w1_4">
+        <span class="micro _number_7m5w1_9" data-reveal>01</span>
+        <h2 class="_title_7m5w1_13" data-reveal-mask><span>Experience</span></h2>
+        <p class="_aside_7m5w1_20" data-reveal style="--reveal-delay:120ms;">Growth, sales and research, next to the founder at a ride-hailing startup, a packaged water brand and a listed-equity fund.</p>
+      </div>
+    </header>
+    <ol>
 
-      <!-- Card 1: Kyra -->
-      <article class="project-card">
-        <div class="card-img">
-          <!-- Kyra.jpg uploaded to GitHub repo -->
-          <img src="Kyra.jpg" alt="Kyra, women-led ride-hailing startup"/>
+      <li class="grid _entry_13hls_5">
+        <div class="_side_13hls_13">
+          <p class="micro _index_13hls_20" data-reveal>Experience 01</p>
+          <p class="micro _period_13hls_21" data-reveal style="--reveal-delay:60ms;">January 2026 to Present</p>
         </div>
-        <div class="card-content">
-          <p class="card-label">Founding Member · Jan 2026 – Present</p>
-          <h3 class="card-title">Kyra</h3>
-          <p class="card-desc">Founding member at a women-led ride-hailing startup. I own growth, the website and funnel analytics, and advise the founder on product.</p>
-          <ul class="card-bullets">
-            <li><b>1,000+ app downloads</b> in the first month after the Aug 2026 Android launch.</li>
-            <li><b>500+ inbound leads</b> and <b>100+ paying customers</b> with zero ad spend.</li>
-            <li>Three reels hit <b>500K+ views</b> and <b>1,600+ followers</b> in one week.</li>
-            <li>Built the website and signup-funnel analytics to find and fix drop-off screens.</li>
-            <li>Won the <b>Mesa Idea Lab Sprint</b> (₹15,000 in funding).</li>
+        <div class="_main_13hls_23">
+          <h3 class="_org_13hls_30" data-reveal-mask><span>Kyra</span></h3>
+          <p class="_place_13hls_37" data-reveal style="--reveal-delay:60ms;">Bengaluru, India</p>
+          <p class="_roles_13hls_41" data-reveal style="--reveal-delay:100ms;"><span>Founding Partner</span></p>
+          <p class="_summary_13hls_46" data-reveal style="--reveal-delay:140ms;">A women-led ride-hailing startup. I own organic acquisition, the signup funnel and the numbers behind both.</p>
+          <ul class="_points_13hls_53" data-reveal style="--reveal-delay:200ms;">
+            <li><span class="micro _pointNum_13hls_67">01</span><span>Rider app at 2,300+ organic downloads and 1,100+ booking attempts, with zero ad spend.</span></li>
+            <li><span class="micro _pointNum_13hls_67">02</span><span>Driver app at about 450 organic downloads, built through the same organic channels.</span></li>
+            <li><span class="micro _pointNum_13hls_67">03</span><span>Instrumented each step of a six-step driver signup to find where drivers drop off.</span></li>
+            <li><span class="micro _pointNum_13hls_67">04</span><span>Interviewed and hired a team of five, and own their output on acquisition and marketing.</span></li>
+            <li><span class="micro _pointNum_13hls_67">05</span><span>Four reels I co-created lifted average views per reel 27x and grew followers 5x in one week.</span></li>
+            <li><span class="micro _pointNum_13hls_67">06</span><span>Run analysis, valuation and investor outreach alongside the founder.</span></li>
           </ul>
-          <div class="card-footer">
-            <div>
-              <p class="card-metric">1,000+</p>
-              <p class="card-metric-sub">App Downloads in Month One</p>
+        </div>
+        <div class="_aside_13hls_74">
+          <figure class="_figure_13hls_78" data-reveal style="--reveal-delay:160ms;">
+            <dl class="_vc_13hls_119">
+              <div class="_vcItem_13hls_125"><dt class="micro">rider downloads</dt><dd>2,300+</dd></div>
+              <div class="_vcItem_13hls_125"><dt class="micro">booking attempts</dt><dd>1,100+</dd></div>
+              <div class="_vcItem_13hls_125"><dt class="micro">ad spend</dt><dd>₹0</dd></div>
+              <div class="_vcItem_13hls_125"><dt class="micro">team managed</dt><dd>5</dd></div>
+            </dl>
+          </figure>
+        </div>
+      </li>
+
+      <li class="grid _entry_13hls_5">
+        <div class="_side_13hls_13">
+          <p class="micro _index_13hls_20" data-reveal>Experience 02</p>
+          <p class="micro _period_13hls_21" data-reveal style="--reveal-delay:60ms;">July to August 2026</p>
+        </div>
+        <div class="_main_13hls_23">
+          <h3 class="_org_13hls_30" data-reveal-mask><span>reform</span></h3>
+          <p class="_place_13hls_37" data-reveal style="--reveal-delay:60ms;">Bengaluru, India</p>
+          <p class="_roles_13hls_41" data-reveal style="--reveal-delay:100ms;"><span>Sales &amp; Growth Intern</span></p>
+          <p class="_summary_13hls_46" data-reveal style="--reveal-delay:140ms;">Sustainable packaged water. I started with no sales, then found the one number that decided the business.</p>
+          <ul class="_points_13hls_53" data-reveal style="--reveal-delay:200ms;">
+            <li><span class="micro _pointNum_13hls_67">01</span><span>Built a 200+ client pipeline in four weeks across three segments, with a structured CRM and outreach system.</span></li>
+            <li><span class="micro _pointNum_13hls_67">02</span><span>Found that reorder rate, not new customers, decided the business, and tracked it as the core KPI.</span></li>
+            <li><span class="micro _pointNum_13hls_67">03</span><span>Reorder rate above 50% overall, peaking at 60%, and 100% on accounts I sourced myself.</span></li>
+            <li><span class="micro _pointNum_13hls_67">04</span><span>In my four weeks there, the pipeline I ran took revenue from about ₹10 lakh to ₹15 lakh (about $10,500 to $15,700) a year, alongside the founder's own work.</span></li>
+          </ul>
+        </div>
+        <div class="_aside_13hls_74">
+          <figure class="_figure_13hls_78" data-reveal aria-label="New customers times reorder rate times face to face selling, leading to what decides the business" style="--reveal-delay:160ms;">
+            <div class="_fwStack_13hls_87">
+              <span class="_fwTerm_13hls_92">New customers</span>
+              <span class="_fwOp_13hls_99">×</span>
+              <span class="_fwTerm_13hls_92">Reorder rate</span>
+              <span class="_fwOp_13hls_99">×</span>
+              <span class="_fwTerm_13hls_92">Face to face</span>
             </div>
-            <span class="card-arrow">↗</span>
+            <span class="_fwArrow_13hls_105" aria-hidden="true">↓</span>
+            <figcaption class="serif _fwResult_13hls_112">What actually decides this business?</figcaption>
+          </figure>
+        </div>
+      </li>
+
+      <li class="grid _entry_13hls_5">
+        <div class="_side_13hls_13">
+          <p class="micro _index_13hls_20" data-reveal>Experience 03</p>
+          <p class="micro _period_13hls_21" data-reveal style="--reveal-delay:60ms;">August 2026</p>
+        </div>
+        <div class="_main_13hls_23">
+          <h3 class="_org_13hls_30" data-reveal-mask><span>Lakshya Capital</span></h3>
+          <p class="_place_13hls_37" data-reveal style="--reveal-delay:60ms;">Independent equity research, at the founder's invitation</p>
+          <p class="_roles_13hls_41" data-reveal style="--reveal-delay:100ms;"><span>Industry research<span class="_roleSep_13hls_45" aria-hidden="true"> / </span></span><span>Investment memos</span></p>
+          <p class="_summary_13hls_46" data-reveal style="--reveal-delay:140ms;">A listed-equity fund of ₹200 crore (about $21M). I screened companies the way the fund does and wrote up what I found.</p>
+          <ul class="_points_13hls_53" data-reveal style="--reveal-delay:200ms;">
+            <li><span class="micro _pointNum_13hls_67">01</span><span>Screened 20+ listed companies in specialty chemicals and China+1 manufacturing.</span></li>
+            <li><span class="micro _pointNum_13hls_67">02</span><span>Assessed each on cash conversion, ROCE, working capital, effective tax rate and governance.</span></li>
+            <li><span class="micro _pointNum_13hls_67">03</span><span>Wrote an investment memo and two due-diligence reports off that screen.</span></li>
+            <li><span class="micro _pointNum_13hls_67">04</span><span>Keep my own portfolio and have written reports on AGI Greenpac and Sharda Cropchem.</span></li>
+          </ul>
+        </div>
+        <div class="_aside_13hls_74">
+          <figure class="_figure_13hls_78" data-reveal style="--reveal-delay:160ms;">
+            <dl class="_vc_13hls_119">
+              <div class="_vcItem_13hls_125"><dt class="micro">fund size</dt><dd>₹200cr<span class="micro"> about $21M</span></dd></div>
+              <div class="_vcItem_13hls_125"><dt class="micro">companies screened</dt><dd>20+</dd></div>
+              <div class="_vcItem_13hls_125"><dt class="micro">investment memo</dt><dd>1</dd></div>
+              <div class="_vcItem_13hls_125"><dt class="micro">due-diligence reports</dt><dd>2</dd></div>
+            </dl>
+          </figure>
+        </div>
+      </li>
+
+    </ol>
+  </div>
+</section>
+
+<!-- 02 WORK -->
+<section id="work" data-theme="light" class="_section_hgqcd_1">
+  <div class="container">
+    <header class="_header_7m5w1_1">
+      <hr class="rule">
+      <div class="grid _row_7m5w1_4">
+        <span class="micro _number_7m5w1_9" data-reveal>02</span>
+        <h2 class="_title_7m5w1_13" data-reveal-mask><span>Selected <em class="serif">work</em></span></h2>
+        <p class="_aside_7m5w1_20" data-reveal style="--reveal-delay:120ms;">A programme I ran for 50+ student founders, a store I built and sold into, a page I grew to a billion impressions, and a category breakdown that matched an MBA hire's.</p>
+      </div>
+    </header>
+
+    <div class="_list_hgqcd_4">
+
+      <article class="grid _entry_1klyx_1 _showcase_1klyx_169" id="work-ivb" aria-labelledby="work-ivb-title">
+        <div class="_showText_1klyx_172">
+          <div class="_text_1klyx_14">
+            <h3 class="_title_1klyx_81" id="work-ivb-title" data-reveal-mask><span><span class="_titleNum_1klyx_88">01</span><span class="_titleSlash_1klyx_95" aria-hidden="true">/</span>D2C Challenge</span></h3>
+            <p class="serif _tagline_1klyx_142" data-reveal style="--reveal-delay:60ms;">A year of classes, and nothing they had actually sold.</p>
+            <p class="_description_1klyx_102" data-reveal style="--reveal-delay:100ms;">At the Institute of Venture Building I designed and ran a D2C business challenge with Prof. Saurabh Jadhav: 50+ student founders in 14 teams, each given a grant and a market. I reviewed revenue and unit economics with them every week.</p>
+            <p class="micro _labels_1klyx_109" data-reveal style="--reveal-delay:140ms;"><span>Programme design<span class="_dot_1klyx_112" aria-hidden="true">·</span></span><span>Unit economics<span class="_dot_1klyx_112" aria-hidden="true">·</span></span><span>Mentoring</span></p>
+            <p class="_result_1klyx_116" data-reveal style="--reveal-delay:200ms;">
+              <span>About ₹25 lakh (about $26,000) of cohort revenue in two months</span>
+              <span class="_recognition_1klyx_127">Took over as Programme Manager mid-programme · 1 of 2 mentors selected from 9</span>
+            </p>
+            <dl class="_meta_1klyx_128" data-reveal style="--reveal-delay:260ms;">
+              <div><dt class="micro">Role</dt><dd>Programme Manager &amp; Student Mentor</dd></div>
+              <div><dt class="micro">Year</dt><dd>June to August 2026</dd></div>
+            </dl>
+          </div>
+        </div>
+        <div class="_showStageCol_1klyx_179">
+          <span class="_numeral_1klyx_56 _showNumeral_1klyx_183" aria-hidden="true">01</span>
+          <div class="_stage_1klyx_190">
+            <div class="_screen_1klyx_215" data-i="0"><div class="_screenSurface_1klyx_222">
+              <div class="m-panel" aria-hidden="true">
+                <div class="m-k">Cohort · 14 teams</div>
+                <ul class="m-bars">
+                  <li><span>Team 04</span><i style="--w:92%"></i></li>
+                  <li><span>Team 09</span><i style="--w:74%"></i></li>
+                  <li><span>Team 02</span><i style="--w:61%"></i></li>
+                  <li><span>Team 11</span><i style="--w:48%"></i></li>
+                  <li><span>Team 07</span><i style="--w:33%"></i></li>
+                </ul>
+                <div class="m-foot">Illustrative distribution · cohort revenue about ₹25 lakh (about $26,000)</div>
+              </div>
+            </div></div>
+            <div class="_screen_1klyx_215" data-i="1"><div class="_screenSurface_1klyx_222">
+              <div class="m-panel" aria-hidden="true">
+                <div class="m-k">Weekly review</div>
+                <ul class="m-rows">
+                  <li><span>Grant spent</span><span>about ₹30,000 (about $315) / team</span></li>
+                  <li><span>Contribution margin</span><span>per order</span></li>
+                  <li><span>Repeat rate</span><span>week on week</span></li>
+                  <li><span>Cash left</span><span>days of runway</span></li>
+                </ul>
+                <div class="m-quote serif">If the unit does not work, the week does not count.</div>
+              </div>
+            </div></div>
+            <div class="_screen_1klyx_215" data-i="2"><div class="_screenSurface_1klyx_222">
+              <div class="m-panel" aria-hidden="true">
+                <div class="m-k">Founders</div>
+                <div class="m-big">50+</div>
+                <div class="m-sub">across 14 teams</div>
+                <ul class="m-rows"><li><span>Mentors selected</span><span>2 of 9</span></li><li><span>Duration</span><span>2 months</span></li></ul>
+              </div>
+            </div></div>
           </div>
         </div>
       </article>
 
-      <!-- Card 2: Fillintheblank -->
-      <article class="project-card">
-        <div class="card-img">
-          <!-- fillintheblank_in.jpg uploaded to GitHub repo -->
-          <img src="fillintheblank_in.jpg" alt="FillInTheBlank.IN"/>
-        </div>
-        <div class="card-content">
-          <p class="card-label">Co-Founder · Aug – Nov 2025</p>
-          <h3 class="card-title">Fillintheblank</h3>
-          <p class="card-desc">Founded and scaled a D2C canvas poster brand from scratch. Ads, logistics and e-commerce all self-built.</p>
-          <ul class="card-bullets">
-            <li>Generated <b>Rs. 1.5L+ revenue</b> within three months of launch.</li>
-            <li>Found the order value where <b>paid acquisition broke even</b>.</li>
-            <li>Won <b>B2B bulk orders</b> that overtook D2C revenue.</li>
-          </ul>
-          <div class="card-footer">
-            <div>
-              <p class="card-metric">Rs. 1.5L+</p>
-              <p class="card-metric-sub">Revenue in 3 Months</p>
+      <article class="grid _entry_1klyx_1" data-layout="split" data-flip="true" id="work-fitb" aria-labelledby="work-fitb-title">
+        <div class="_visualCol_1klyx_13">
+          <span class="_numeral_1klyx_56" aria-hidden="true">02</span>
+          <div class="_frame_1klyx_27"><div class="_inner_1klyx_40">
+            <div class="m-panel m-fill" aria-hidden="true">
+              <div class="m-k">Paid acquisition · break-even</div>
+              <div class="m-chart">
+                <div class="m-axis"><span>CAC</span><span>AOV</span></div>
+                <div class="m-cols">
+                  <div class="m-col"><i style="--h:38%"></i><i class="m-col2" style="--h:30%"></i><span>D2C single</span></div>
+                  <div class="m-col"><i style="--h:50%"></i><i class="m-col2" style="--h:52%"></i><span>D2C bundle</span></div>
+                  <div class="m-col"><i style="--h:44%"></i><i class="m-col2" style="--h:88%"></i><span>B2B bulk</span></div>
+                </div>
+                <div class="m-line"><span>Break-even order value</span></div>
+              </div>
+              <div class="m-foot">Illustrative · B2B bulk overtook D2C</div>
             </div>
-            <span class="card-arrow">↗</span>
+          </div></div>
+        </div>
+        <div class="_textCol_1klyx_14">
+          <div class="_text_1klyx_14">
+            <h3 class="_title_1klyx_81" id="work-fitb-title" data-reveal-mask><span><span class="_titleNum_1klyx_88">02</span><span class="_titleSlash_1klyx_95" aria-hidden="true">/</span>Fill in the Blank</span></h3>
+            <p class="serif _tagline_1klyx_142" data-reveal style="--reveal-delay:60ms;">Canvas posters, and the order value where ads finally paid for themselves.</p>
+            <p class="_description_1klyx_102" data-reveal style="--reveal-delay:100ms;">FillintheBlank.store, a D2C brand I co-founded. I built the store, payments and logistics myself and ran Meta Ads alongside organic, until the numbers told us bulk B2B orders were the better business.</p>
+            <p class="micro _labels_1klyx_109" data-reveal style="--reveal-delay:140ms;"><span>D2C<span class="_dot_1klyx_112" aria-hidden="true">·</span></span><span>Meta Ads<span class="_dot_1klyx_112" aria-hidden="true">·</span></span><span>Unit economics<span class="_dot_1klyx_112" aria-hidden="true">·</span></span><span>Logistics</span></p>
+            <p class="_result_1klyx_116" data-reveal style="--reveal-delay:200ms;">
+              <span>₹1.5 lakh+ (about $1,600) in three months</span>
+              <span class="_recognition_1klyx_127">Found the order value where paid acquisition broke even</span>
+            </p>
+            <dl class="_meta_1klyx_128" data-reveal style="--reveal-delay:260ms;">
+              <div><dt class="micro">Role</dt><dd>Co-Founder · store, payments, growth</dd></div>
+              <div><dt class="micro">Year</dt><dd>August to November 2025</dd></div>
+            </dl>
           </div>
         </div>
       </article>
 
-      <!-- Card 3: Football Media -->
-      <article class="project-card">
-        <div class="card-img">
-          <!-- Futtninja.jpg uploaded to GitHub repo -->
-          <img src="Futtninja.jpg" alt="Futtninja football media page"/>
-        </div>
-        <div class="card-content">
-          <p class="card-label">Founder · 2019 – 2023</p>
-          <h3 class="card-title">Futtninja</h3>
-          <p class="card-desc">Built and scaled a sports media platform with massive organic reach across short-form content platforms.</p>
-          <ul class="card-bullets">
-            <li>Grew to <b>1B+ organic impressions</b> over four years.</li>
-            <li><b>Sold to a Barcelona media agency</b> for ₹1L+.</li>
-          </ul>
-          <div class="card-footer">
-            <div>
-              <p class="card-metric">1B+</p>
-              <p class="card-metric-sub">Organic Impressions</p>
+      <article class="grid _entry_1klyx_1" data-layout="wide" id="work-futtninja" aria-labelledby="work-futtninja-title">
+        <div class="_visualCol_1klyx_13">
+          <span class="_numeral_1klyx_56" aria-hidden="true">03</span>
+          <div class="_frame_1klyx_27"><div class="_inner_1klyx_40">
+            <div class="m-panel m-fill m-center" aria-hidden="true">
+              <div class="m-k">Organic impressions · 2019 to 2023</div>
+              <div class="m-big m-huge">1B+</div>
+              <div class="m-spark"><i style="--h:14%"></i><i style="--h:22%"></i><i style="--h:30%"></i><i style="--h:27%"></i><i style="--h:44%"></i><i style="--h:58%"></i><i style="--h:52%"></i><i style="--h:71%"></i><i style="--h:84%"></i><i style="--h:96%"></i></div>
+              <ul class="m-rows">
+                <li><span>Started at</span><span>15, during COVID</span></li>
+                <li><span>Exit</span><span>sold to a media agency in Barcelona</span></li>
+              </ul>
             </div>
-            <span class="card-arrow">↗</span>
+          </div></div>
+        </div>
+        <div class="_textCol_1klyx_14">
+          <div class="_text_1klyx_14">
+            <h3 class="_title_1klyx_81" id="work-futtninja-title" data-reveal-mask><span><span class="_titleNum_1klyx_88">03</span><span class="_titleSlash_1klyx_95" aria-hidden="true">/</span>Futtninja</span></h3>
+            <p class="serif _tagline_1klyx_142" data-reveal style="--reveal-delay:60ms;">A football page, built because short-form was about to take over.</p>
+            <p class="_description_1klyx_102" data-reveal style="--reveal-delay:100ms;">I started it at 15 after TikTok was banned in India and the audience moved to reels. Over four years it reached more than a billion organic impressions. Followers asked for specific posts; those underperformed, so I chose content from trend data instead of requests. I sold it to a media agency in Barcelona.</p>
+            <p class="micro _labels_1klyx_109" data-reveal style="--reveal-delay:140ms;"><span>Content strategy<span class="_dot_1klyx_112" aria-hidden="true">·</span></span><span>Audience data<span class="_dot_1klyx_112" aria-hidden="true">·</span></span><span>Exit</span></p>
+            <p class="_result_1klyx_116" data-reveal style="--reveal-delay:200ms;">
+              <span>1B+ organic impressions over four years</span>
+              <span class="_recognition_1klyx_127">Sold for about ₹1 lakh+ (about $1,000)</span>
+            </p>
+            <dl class="_meta_1klyx_128" data-reveal style="--reveal-delay:260ms;">
+              <div><dt class="micro">Role</dt><dd>Founder</dd></div>
+              <div><dt class="micro">Year</dt><dd>2019 to 2023</dd></div>
+            </dl>
+          </div>
+        </div>
+      </article>
+
+      <article class="grid _entry_1klyx_1" data-layout="split" data-flip="true" id="work-bsc" aria-labelledby="work-bsc-title">
+        <div class="_visualCol_1klyx_13">
+          <span class="_numeral_1klyx_56" aria-hidden="true">04</span>
+          <div class="_frame_1klyx_27"><div class="_inner_1klyx_40">
+            <div class="m-panel m-fill" aria-hidden="true">
+              <div class="m-k">Competitor teardown · Muuchstac</div>
+              <ul class="m-rows">
+                <li><span>Distribution</span><span>nano &amp; micro creators, UGC first</span></li>
+                <li><span>Markets</span><span>Tier 2 and 3, marketplace led</span></li>
+                <li><span>Hero product</span><span>about 90% of revenue</span></li>
+                <li><span>Entry price</span><span>₹125 to ₹150 (about $1.30 to $1.60)</span></li>
+              </ul>
+              <div class="m-split"><span class="m-risk">Risk · hero dependence</span><span class="m-opp">Opportunity · SKU laddering</span></div>
+              <div class="m-foot">Later sold for about ₹480 crore (about $50M)</div>
+            </div>
+          </div></div>
+        </div>
+        <div class="_textCol_1klyx_14">
+          <div class="_text_1klyx_14">
+            <h3 class="_title_1klyx_81" id="work-bsc-title" data-reveal-mask><span><span class="_titleNum_1klyx_88">04</span><span class="_titleSlash_1klyx_95" aria-hidden="true">/</span>Bombay Shaving Company</span></h3>
+            <p class="serif _tagline_1klyx_142" data-reveal style="--reveal-delay:60ms;">Many small creators beat a few expensive ones.</p>
+            <p class="_description_1klyx_102" data-reveal style="--reveal-delay:100ms;">Introduced to the category manager through an ex-Colgate contact, I broke down a competitor's nano and micro influencer strategy in Excel: where the volume came from, what the entry price was doing, and how much of the business sat on one hero product.</p>
+            <p class="micro _labels_1klyx_109" data-reveal style="--reveal-delay:140ms;"><span>Category analysis<span class="_dot_1klyx_112" aria-hidden="true">·</span></span><span>Excel<span class="_dot_1klyx_112" aria-hidden="true">·</span></span><span>Consumer</span></p>
+            <p class="_result_1klyx_116" data-reveal style="--reveal-delay:200ms;">
+              <span>"Great work, pretty much what we derived"</span>
+              <span class="_recognition_1klyx_127">Aruj Garg, Category Manager · matched the team's own MBA hire</span>
+            </p>
+            <dl class="_meta_1klyx_128" data-reveal style="--reveal-delay:260ms;">
+              <div><dt class="micro">Role</dt><dd>Independent analysis</dd></div>
+              <div><dt class="micro">Scope</dt><dd>Influencer strategy, pricing, hero-product risk</dd></div>
+            </dl>
           </div>
         </div>
       </article>
 
     </div>
+
+    <div class="_earlier_hgqcd_10">
+      <p class="micro _earlierLabel_hgqcd_16" data-reveal>Earlier work</p>
+      <ul>
+        <li class="grid _earlierRow_hgqcd_20" data-reveal style="--reveal-delay:0ms;">
+          <h3 class="_earlierTitle_hgqcd_29">MSME credit evaluator</h3>
+          <p class="micro _earlierKind_hgqcd_37">AI / Alternate data<span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span>2026</p>
+          <p class="_earlierText_hgqcd_41">A workflow agent that scores small businesses on UPI transaction history and supplier invoices instead of credit scores, drawn from my father's MSME. The hackathon version won 1st place at the Mesa AI Hackathon, ₹20,000 (about $210), as part of a four-person team, built in 24 hours.</p>
+          <p class="micro _earlierMeta_hgqcd_48"><span class="_earlierItem_hgqcd_58">Alternate data</span><span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span><span class="_earlierItem_hgqcd_58">Credit risk</span><span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span><span class="_earlierItem_hgqcd_58">1st place</span><span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span><span class="_earlierItem_hgqcd_58">24 hours</span></p>
+        </li>
+        <li class="grid _earlierRow_hgqcd_20" data-reveal style="--reveal-delay:80ms;">
+          <h3 class="_earlierTitle_hgqcd_29">Loopdesk AI</h3>
+          <p class="micro _earlierKind_hgqcd_37">Go-to-market<span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span>May to August 2026</p>
+          <p class="_earlierText_hgqcd_41">200+ customer interviews in 12 weeks and an outbound pipeline from zero to 500+ prospects a day, with segments cut on conversion data. Re-targeting the customer profile took monthly active users from under 10 to 200 in three months.</p>
+          <p class="micro _earlierMeta_hgqcd_48"><span class="_earlierItem_hgqcd_58">200+ interviews</span><span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span><span class="_earlierItem_hgqcd_58">MAU 10 to 200</span><span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span><span class="_earlierItem_hgqcd_58">AI SaaS</span></p>
+        </li>
+        <li class="grid _earlierRow_hgqcd_20" data-reveal style="--reveal-delay:160ms;">
+          <h3 class="_earlierTitle_hgqcd_29">Bal Vigyan</h3>
+          <p class="micro _earlierKind_hgqcd_37">School pitching competition<span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span>Commerce</p>
+          <p class="_earlierText_hgqcd_41">1st of 80+ CBSE schools under the Indore Sahodaya Schools Complex, in a team of four. We built a business model and a prototype off 100+ target segment interviews.</p>
+          <p class="micro _earlierMeta_hgqcd_48"><span class="_earlierItem_hgqcd_58">1st of 80+ schools</span><span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span><span class="_earlierItem_hgqcd_58">100+ interviews</span><span class="_earlierDot_hgqcd_54" aria-hidden="true"> · </span><span class="_earlierItem_hgqcd_58">Team of four</span></p>
+        </li>
+      </ul>
+    </div>
   </div>
 </section>
 
-<!-- =====================
-     MORE EXPERIENCE
-===================== -->
-<section id="experience">
+<!-- 03 LEADERSHIP -->
+<section id="leadership" data-theme="light" class="_section_v6hio_1" aria-labelledby="leadership-title">
   <div class="container">
-    <div class="section-top">
-      <div>
-        <h2 class="section-heading">More<br/>Experience</h2>
-        <span class="gold-bar"></span>
-      </div>
-    </div>
-    <div class="exp-list">
-
-      <div class="exp-item">
-        <p class="exp-year">2026</p>
-        <div class="exp-right">
-          <h3>Loopdesk AI</h3>
-          <p class="exp-role">Go-to-Market Intern · Bengaluru</p>
-          <ul class="exp-bullets">
-            <li>Ran <b>200+ customer interviews</b> in 12 weeks to inform product-market fit.</li>
-            <li>Built outbound from zero to <b>500+ prospects a day</b>.</li>
-            <li>Grew MAU from <b>under 10 to 200</b> in three months.</li>
+    <hr class="rule">
+    <div class="grid _body_v6hio_4">
+      <p class="micro _kicker_v6hio_9" data-reveal><span>03</span><span class="_kickerSep_v6hio_16" aria-hidden="true">/</span><span>Leadership</span></p>
+      <h2 class="_headline_v6hio_18" id="leadership-title">
+        <span data-reveal-mask style="--reveal-delay:80ms;"><span>Given the teams</span></span>
+        <span data-reveal-mask style="--reveal-delay:180ms;"><span class="serif">nobody bet on.</span></span>
+      </h2>
+      <div class="_entries_v6hio_30">
+        <div class="_facts_v6hio_36" data-reveal style="--reveal-delay:280ms;">
+          <p class="_org_v6hio_45">Mesa School of Business</p>
+          <p class="_role_v6hio_51">Summer Programme Mentor<span class="_period_v6hio_52"> · July 2026</span></p>
+          <p class="_text_v6hio_53">One of nine mentors, given the youngest teams, 13 and 14-year-olds, when everyone expected the older teams to win. I set one target per team, ₹1 lakh (about $1,050), and every priority came from that number. One team fought almost daily and still reached about ₹1.4 lakh (about $1,500) in 12 days; the other reached about ₹40,000 (about $420). I hit the goal with one team and not the other, and learned more from the one I missed.</p>
+          <ul class="_areas_v6hio_54" aria-label="Mesa mentoring highlights">
+            <li>About ₹1.8L (about $1,900) in 12 days</li>
+            <li>About 1,300 customers</li>
+            <li>23% repeat rate</li>
+            <li>1 of 9 mentors</li>
+          </ul>
+        </div>
+        <div class="_facts_v6hio_36" data-reveal style="--reveal-delay:370ms;">
+          <p class="_org_v6hio_45">Model United Nations &amp; sport</p>
+          <p class="_role_v6hio_51">IP Head, Head of Editorial<span class="_period_v6hio_52"> · school years</span></p>
+          <p class="_text_v6hio_53">15+ national MUN conferences with several awards, and two years running the editorial and international press side of my school's own conference. On the sport side, second place in both the state Basketball and the state Football championships, and I represented Madhya Pradesh at football.</p>
+          <ul class="_areas_v6hio_54" aria-label="Other leadership highlights">
+            <li>15+ conferences</li>
+            <li>Head of Editorial</li>
+            <li>2x state runner-up</li>
           </ul>
         </div>
       </div>
-
-      <div class="exp-item">
-        <p class="exp-year">2026</p>
-        <div class="exp-right">
-          <h3>reform</h3>
-          <p class="exp-role">Intern, Sustainable Packaged Water · Bengaluru</p>
-          <ul class="exp-bullets">
-            <li>Grew revenue run-rate from <b>₹10L to ₹15L</b> in four weeks via a pipeline I built.</li>
-            <li>Built weekly <b>reorder-rate tracking</b>, the key business driver.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="exp-item">
-        <p class="exp-year">2026</p>
-        <div class="exp-right">
-          <h3>Institute of Venture Building</h3>
-          <p class="exp-role">Programme Manager &amp; Student Mentor · Chennai</p>
-          <ul class="exp-bullets">
-            <li>Ran a D2C challenge for <b>50+ student founders</b>, ₹25L+ cohort revenue in two months.</li>
-            <li>Reviewed unit economics and growth weekly against KPIs.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="exp-item">
-        <p class="exp-year">2026</p>
-        <div class="exp-right">
-          <h3>Mesa School of Business</h3>
-          <p class="exp-role">Summer Programme Mentor · Bengaluru</p>
-          <ul class="exp-bullets">
-            <li>One of <b>nine mentors</b> selected.</li>
-            <li>Led two teams to <b>₹1.8L revenue in 12 days</b>, 1,300 customers, 23% repeat rate.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="exp-item">
-        <p class="exp-year">2026</p>
-        <div class="exp-right">
-          <h3>Equity Screen for a ₹200 Crore Fund</h3>
-          <p class="exp-role">Independent Project</p>
-          <ul class="exp-bullets">
-            <li>Analysed <b>10 years of financials for 22 listed companies</b> on cash conversion, capex, working capital, tax and dilution.</li>
-            <li>Two companies passed the screen.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="exp-item">
-        <p class="exp-year">2026</p>
-        <div class="exp-right">
-          <h3>Apparel Brand: Growth Strategy</h3>
-          <p class="exp-role">Bengaluru</p>
-          <ul class="exp-bullets">
-            <li>Designed organic growth strategy that scaled the brand's social presence to <b>4,000+ followers</b> through targeted content and community engagement.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="exp-item">
-        <p class="exp-year">2026</p>
-        <div class="exp-right">
-          <h3>Freelance Website Development</h3>
-          <p class="exp-role">Remote</p>
-          <ul class="exp-bullets">
-            <li>Design and build websites for <b>individuals and small businesses</b> establishing their digital presence.</li>
-            <li>Deliver full website deployment including UI design, hosting setup and launch.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="exp-item">
-        <p class="exp-year">2023</p>
-        <div class="exp-right">
-          <h3>YOUVAH</h3>
-          <p class="exp-role">Graphic Design Intern · Remote</p>
-          <ul class="exp-bullets">
-            <li>Designed digital campaign assets used for <b>social media marketing</b> and brand communication initiatives.</li>
-            <li>Supported marketing campaigns using <b>Figma and Adobe Creative Suite</b>.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="exp-item">
-        <p class="exp-year">2022</p>
-        <div class="exp-right">
-          <h3>Oberoi Hotels</h3>
-          <p class="exp-role">Kitchen Operations Intern · Mumbai</p>
-          <ul class="exp-bullets">
-            <li>Worked in a <b>high-performance luxury hospitality kitchen</b>, supporting chefs during peak service hours.</li>
-            <li>Maintained strict hygiene, preparation workflows and operational standards in a fast-paced environment.</li>
-          </ul>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
 
-<!-- =====================
-     AWARDS
-===================== -->
-<section id="awards">
+<!-- 04 ABOUT -->
+<section id="about" data-theme="light" class="_section_1jcqt_1">
   <div class="container">
-    <div class="section-top">
-      <h2 class="section-heading">Awards &amp;<br/>Recognition</h2>
-      <p class="section-label">Small Wins</p>
+    <header class="_header_7m5w1_1">
+      <hr class="rule">
+      <div class="grid _row_7m5w1_4">
+        <span class="micro _number_7m5w1_9" data-reveal>04</span>
+        <h2 class="_title_7m5w1_13" data-reveal-mask><span>About</span></h2>
+      </div>
+    </header>
+    <div class="grid _statement_1jcqt_6">
+      <h3 class="_headline_1jcqt_10" data-reveal>Somewhere between <em class="serif">"what does the number say?"</em> and ship it.</h3>
+      <div class="_prose_1jcqt_23">
+        <p data-reveal style="--reveal-delay:100ms;">I have wanted to work in financial analysis since eighth grade, and most of my work since has ended up in the numbers of real businesses. I study at IIM Bangalore and Mesa School of Business, and I spend the rest of my time next to founders at Kyra, reform and Loopdesk AI.</p>
+        <p data-reveal style="--reveal-delay:180ms;">Founders run on instinct. My job is to read the pattern objectively and either back that instinct with evidence or show why it is wrong. A problem statement is only a statement; what I enjoy is taking it to an action plan and then to scale.</p>
+        <p data-reveal style="--reveal-delay:240ms;">Sometimes that means finding the one number that decides a business. Sometimes it means building the thing. Sometimes it means saying the idea should not exist.</p>
+      </div>
+      <dl class="_edu_1jcqt_36" data-reveal style="--reveal-delay:240ms;">
+        <div><dt class="micro">School</dt><dd>IIM Bangalore</dd></div>
+        <div><dt class="micro">Degree</dt><dd>BBA, Digital Business &amp; Entrepreneurship</dd></div>
+        <div><dt class="micro">Concurrent</dt><dd>Mesa School of Business · GPA 3.78/4.00</dd></div>
+        <div><dt class="micro">Expected</dt><dd>May 2028</dd></div>
+      </dl>
     </div>
-    <div class="awards-grid">
-
-      <div class="award-card">
-        <p class="award-year">2025 · Bengaluru</p>
-        <p class="award-title">Mesa AI Hackathon: Winner</p>
-        <p class="award-desc">Four-person team built an <b>MSME credit evaluator</b> on invoice and payments data in 24 hours. <b>1st place</b>, ₹20,000.</p>
-      </div>
-
-      <div class="award-card">
-        <p class="award-year">2024 · Goa</p>
-        <p class="award-title">Inter-State Football Championship</p>
-        <p class="award-desc">Represented Madhya Pradesh in inter-state competition, securing <b>2nd place</b> in the state championship tournament.</p>
-      </div>
-
-      <div class="award-card">
-        <p class="award-year">2024 · Indore</p>
-        <p class="award-title">NCSC–Bal Vigyan | Economics</p>
-        <p class="award-desc">Recognized for developing a <b>business model</b> demonstrating strong market viability and economic reasoning.</p>
-      </div>
-
-      <div class="award-card">
-        <p class="award-year">Ongoing</p>
-        <p class="award-title">Model United Nations</p>
-        <p class="award-desc">Participated in <b>15+ national conferences</b>, winning several awards. Served as IP Head and Head of Editorial for school MUN.</p>
-      </div>
-
-      <div class="award-card">
-        <p class="award-year">Ongoing</p>
-        <p class="award-title">Ad-Mad Marketing Competition</p>
-        <p class="award-desc">Repositioned a product for a new target segment, securing <b>1st place</b> out of 10+ city-wide teams.</p>
-      </div>
-
-      <div class="award-card">
-        <p class="award-year">Ongoing</p>
-        <p class="award-title">Volunteer Work</p>
-        <p class="award-desc">Contributed to <b>Muskurahat Foundation</b> fundraising and helped develop learning resources for visually impaired students with the National Association for the Blind.</p>
-      </div>
-
+    <div class="grid _outside_1jcqt_54">
+      <h3 class="_outsideLead_1jcqt_62">
+        <span data-reveal-mask style="--reveal-delay:0ms;"><span>When I'm not</span></span>
+        <span data-reveal-mask style="--reveal-delay:90ms;"><span>reading a</span></span>
+        <span data-reveal-mask style="--reveal-delay:180ms;"><span>balance sheet →</span></span>
+      </h3>
+      <ul class="_outsideList_1jcqt_71">
+        <li data-reveal style="--reveal-delay:200ms;">Football</li>
+        <li data-reveal style="--reveal-delay:260ms;">Basketball</li>
+        <li data-reveal style="--reveal-delay:320ms;">Cooking</li>
+        <li class="serif _outsideLast_1jcqt_85" data-reveal style="--reveal-delay:380ms;">probably another company</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- =====================
-     SKILLS
-===================== -->
-<section id="skills">
+<!-- 05 CONTACT -->
+<section id="contact" data-theme="dark" class="_section_v3tj0_1">
   <div class="container">
-    <div class="section-top">
-      <div>
-        <h2 class="section-heading">Tools &amp;<br/>Skills</h2>
-        <span class="gold-bar"></span>
-      </div>
+    <div class="grid _top_v3tj0_7">
+      <p class="micro _num_v3tj0_10" data-reveal>05 · Contact</p>
+      <h2 class="_ask_v3tj0_14">
+        <span data-reveal-mask><span>Have a company worth taking apart?</span></span>
+        <span data-reveal-mask style="--reveal-delay:110ms;"><span class="_askSerif_v3tj0_21">I'd like to hear about it.</span></span>
+      </h2>
+      <p class="_blurb_v3tj0_28" data-reveal style="--reveal-delay:200ms;">Strategy consulting, investment research, banking or venture, and early-stage teams who need someone to read the pattern before the call gets made.</p>
     </div>
-    <div class="skills-grid">
-
-      <div class="skill-group">
-        <h4>Business &amp; Strategy</h4>
-        <div class="tags-row">
-          <span class="skill-tag">Market Entry Strategy</span>
-          <span class="skill-tag">Go-To-Market Planning</span>
-          <span class="skill-tag">Business Model Design</span>
-          <span class="skill-tag">Startup Operations</span>
-        </div>
-      </div>
-
-      <div class="skill-group">
-        <h4>Analytics &amp; Tools</h4>
-        <div class="tags-row">
-          <span class="skill-tag">Excel</span>
-          <span class="skill-tag">Google Sheets</span>
-          <span class="skill-tag">Power BI</span>
-          <span class="skill-tag">GA4</span>
-          <span class="skill-tag">Financial Statement Analysis</span>
-          <span class="skill-tag">Unit Economics</span>
-          <span class="skill-tag">Market Sizing</span>
-          <span class="skill-tag">Funnel &amp; Cohort Analysis</span>
-        </div>
-      </div>
-
-      <div class="skill-group">
-        <h4>Design &amp; Digital</h4>
-        <div class="tags-row">
-          <span class="skill-tag">Figma</span>
-          <span class="skill-tag">Adobe Creative Suite</span>
-          <span class="skill-tag">Meta Ads</span>
-          <span class="skill-tag">Website Development</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- =====================
-     INTERESTS
-===================== -->
-<section id="interests">
-  <div class="container">
-    <div class="section-top">
-      <div>
-        <h2 class="section-heading">Currently<br/>Reading</h2>
-        <span class="gold-bar"></span>
-      </div>
-    </div>
-    <div class="interests-grid">
-      <div class="reading-card">
-        <p class="section-label">On my desk right now</p>
-        <h3>Ego Is the Enemy</h3>
-        <p>Ryan Holiday's reminder that the biggest obstacle to doing good work is usually yourself. Re-reading it as a reality check while building things — staying hungry without letting the ego run the show.</p>
-        <div class="reading-quote">
-          &ldquo;The ability to evaluate one's own ability is the most important skill for any entrepreneur, athlete, or aspiring professional.&rdquo;
-        </div>
-      </div>
-      <div class="book-column">
-        <div class="book-cover">
-          <!-- Thinking_fast___Slow.jpg uploaded to GitHub repo -->
-          <img src="Thinking_fast___Slow.jpg" alt="Ego Is the Enemy — Ryan Holiday"/>
-          <p class="book-label">Ego Is the Enemy — Ryan Holiday</p>
-        </div>
-        <div class="thought-block">
-          <h4>Why this book</h4>
-          <p>Most people fail not because they lack talent but because their ego distorts their view of reality. Useful for anyone trying to build something — you have to stay coachable and honest with yourself, even (especially) when things are going well.</p>
-        </div>
+    <div class="grid _links_v3tj0_37" data-reveal style="--reveal-delay:260ms;">
+      <ul class="_linkList_v3tj0_45">
+        <li class="_linkRow_v3tj0_48">
+          <span class="micro _linkLabel_v3tj0_57">Email</span>
+          <a class="_link_jznea_1 _link_v3tj0_37" data-dir="right" href="mailto:shivanshpahwa741@gmail.com"><span class="u-link">shivanshpahwa741@gmail.com</span><span class="_arrow_jznea_11" aria-hidden="true">→</span></a>
+        </li>
+        <li class="_linkRow_v3tj0_48">
+          <span class="micro _linkLabel_v3tj0_57">LinkedIn</span>
+          <a class="_link_jznea_1 _link_v3tj0_37" data-dir="up-right" href="https://www.linkedin.com/in/shivansh-pahwa/" target="_blank" rel="noopener noreferrer" data-cursor="ext"><span class="u-link">linkedin.com/in/shivansh-pahwa</span><span class="_arrow_jznea_11" aria-hidden="true">↗</span></a>
+        </li>
+        <li class="_linkRow_v3tj0_48">
+          <span class="micro _linkLabel_v3tj0_57">Phone</span>
+          <a class="_link_jznea_1 _link_v3tj0_37" data-dir="right" href="tel:+918109821725"><span class="u-link">+91 81098 21725</span><span class="_arrow_jznea_11" aria-hidden="true">→</span></a>
+        </li>
+      </ul>
+      <div class="_resume_v3tj0_63">
+        <a href="resume.pdf" target="_blank" rel="noreferrer" class="_resumeBtn_v3tj0_66" data-cursor="ext">
+          <span>Résumé</span>
+          <span class="_resumeMeta_v3tj0_84">PDF · October 2026</span>
+          <span class="_resumeArrow_v3tj0_90" aria-hidden="true">↗</span>
+        </a>
       </div>
     </div>
   </div>
-</section>
-
-<!-- =====================
-     CONTACT
-===================== -->
-<section id="contact">
-  <h2>Let&rsquo;s Figure It<br/>Out Together.</h2>
-  <div class="cta-buttons">
-    <a class="btn-dark" href="mailto:shivansh_pahwa@ug29.mesaschool.co">Get in Touch</a>
-    <a class="btn-outline-dark" href="https://www.linkedin.com/in/shivansh-pahwa-28062006sh/" target="_blank">LinkedIn</a>
-  </div>
+  <footer class="_footer_v3tj0_98">
+    <div class="container">
+      <p class="_wordmark_v3tj0_104" aria-label="Shivansh Pahwa">
+        <span data-reveal-mask><span>Shivansh</span></span>
+        <span data-reveal-mask style="--reveal-delay:90ms;"><span class="_wordmarkLast_v3tj0_113">Pahwa</span></span>
+      </p>
+      <div class="micro _colophon_v3tj0_116">
+        <span>© 2026</span>
+        <span>Bengaluru, IN · <time data-clock>…</time></span>
+        <span class="_colophonRight_v3tj0_125">Still reading the numbers.</span>
+        <a href="#intro" class="_top2_v3tj0_128">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
 </section>
 
 </main>
-
-<!-- =====================
-     FOOTER
-===================== -->
-<footer>
-  <div class="container">
-    <div>
-      <p class="footer-name">Shivansh Pahwa</p>
-      <p class="footer-tagline">shivansh_pahwa@ug29.mesaschool.co · +91-81098 21725</p>
-    </div>
-    <ul class="footer-links">
-      <li><a href="https://www.linkedin.com/in/shivansh-pahwa-28062006sh/" target="_blank">LinkedIn</a></li>
-      <li><a href="mailto:shivansh_pahwa@ug29.mesaschool.co">Email</a></li>
-      <li><a class="back-top" href="#hero">Back to Top</a></li>
-    </ul>
-  </div>
-</footer>
-
+</div>
+<script src="assets/app.js"></script>
 </body>
 </html>

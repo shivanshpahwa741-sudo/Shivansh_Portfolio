@@ -1,0 +1,71 @@
+/* Mock panels for the work visuals, built on the base design tokens. */
+
+.m-panel{
+  position:absolute;inset:0;display:flex;flex-direction:column;gap:var(--s-3);
+  padding:clamp(1rem,2.2vw,1.9rem);
+  background:var(--bg-2);color:var(--ink);
+  font-size:clamp(.72rem,.95vw,.9rem);line-height:1.4;
+  transition:background-color var(--dur-theme) var(--ease-in-out),color var(--dur-theme) var(--ease-in-out);
+}
+.m-fill{position:absolute;inset:0}
+.m-center{justify-content:center;align-items:stretch}
+
+.m-k{
+  font-size:var(--text-micro);letter-spacing:var(--tracking-micro);
+  text-transform:uppercase;color:var(--ink-3);
+}
+.m-foot{
+  margin-top:auto;padding-top:var(--s-3);border-top:1px solid var(--line);
+  font-size:var(--text-micro);letter-spacing:var(--tracking-micro);
+  text-transform:uppercase;color:var(--ink-3);
+}
+
+.m-bars{display:flex;flex-direction:column;gap:var(--s-3);margin-top:var(--s-2)}
+.m-bars li{display:grid;grid-template-columns:5.2em 1fr;align-items:center;gap:var(--s-3)}
+.m-bars i{display:block;height:6px;width:var(--w);background:var(--ink);opacity:.8}
+.m-bars .m-v{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+
+.m-rows{display:flex;flex-direction:column;gap:var(--s-2);margin-top:var(--s-2)}
+.m-rows li{
+  display:flex;justify-content:space-between;gap:var(--s-4);
+  padding-bottom:var(--s-2);border-bottom:1px solid var(--line);
+}
+.m-rows li span:first-child{color:var(--ink-3)}
+.m-rows li span:last-child{text-align:right}
+
+.m-quote{margin-top:auto;font-size:var(--text-lead);line-height:1.25;color:var(--ink-2)}
+
+.m-big{font-size:clamp(2.4rem,6vw,4.4rem);font-weight:500;letter-spacing:-.04em;line-height:1}
+.m-huge{font-size:clamp(3rem,9vw,7rem)}
+.m-sub{color:var(--ink-3);margin-top:calc(var(--s-1) * -1)}
+
+.m-spark{display:flex;align-items:flex-end;gap:4px;width:100%;height:28%;min-height:56px;margin:var(--s-4) 0}
+.m-spark i{display:block;flex:1;height:var(--h);background:var(--ink);opacity:.72}
+
+.m-chart{flex:1;display:flex;flex-direction:column;gap:var(--s-3);position:relative}
+.m-axis{display:flex;gap:var(--s-4);font-size:var(--text-micro);letter-spacing:var(--tracking-micro);text-transform:uppercase;color:var(--ink-3)}
+.m-axis span:first-child::before,.m-axis span:last-child::before{
+  content:"";display:inline-block;width:8px;height:8px;margin-right:6px;background:var(--ink);opacity:.8;
+}
+.m-axis span:last-child::before{opacity:.35}
+.m-cols{flex:1;display:flex;align-items:flex-end;gap:var(--s-5)}
+.m-col{flex:1;display:flex;align-items:flex-end;gap:5px;position:relative;height:100%}
+.m-col i{display:block;flex:1;height:var(--h);background:var(--ink);opacity:.8}
+.m-col .m-col2{opacity:.35}
+.m-col span{
+  position:absolute;bottom:-1.6em;left:0;
+  font-size:var(--text-micro);letter-spacing:var(--tracking-micro);text-transform:uppercase;color:var(--ink-3);
+}
+.m-line{margin-top:var(--s-6);padding-top:var(--s-2);border-top:1px dashed var(--line-strong);color:var(--ink-3);font-size:var(--text-micro);letter-spacing:var(--tracking-micro);text-transform:uppercase}
+
+.m-split{display:flex;gap:var(--s-3);flex-wrap:wrap}
+.m-split span{border:1px solid var(--line-strong);padding:.35em .7em;color:var(--ink-2)}
+.m-split .m-risk{border-color:var(--accent);color:var(--accent)}
+
+@media (width<=900px){
+  .m-panel{font-size:.74rem;gap:var(--s-2)}
+  .m-bars li{grid-template-columns:4.4em 1fr}
+}
+
+/* long project names must not break the sticky text column */
+._title_1klyx_81{overflow-wrap:anywhere}
